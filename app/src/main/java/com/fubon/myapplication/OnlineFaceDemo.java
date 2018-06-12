@@ -12,7 +12,9 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -28,19 +30,20 @@ import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechUtility;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class OnlineFaceDemo extends Activity implements View.OnClickListener {
     private final String TAG = "OnlineFaceDemo";
     private final int REQUEST_PICTURE_CHOOSE = 1;
     private final int REQUEST_CAMERA_IMAGE = 2;
-
+    String mCurrentPhotoPath;
     private Bitmap mImage = null;
     private byte[] mImageData = null;
     // authid为6-18个字符长度，用于唯一标识用户
@@ -68,6 +71,11 @@ public class OnlineFaceDemo extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_online_face_demo);
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
+
         findViewById(R.id.online_pick).setOnClickListener(OnlineFaceDemo.this);
         findViewById(R.id.online_reg).setOnClickListener(OnlineFaceDemo.this);
         findViewById(R.id.online_verify).setOnClickListener(OnlineFaceDemo.this);
@@ -88,9 +96,7 @@ public class OnlineFaceDemo extends Activity implements View.OnClickListener {
                 // cancel进度框时,取消正在进行的操作
                 if (null != mIdVerifier) {
                     mIdVerifier.cancel();
-                }
-            }
-        });
+                }}});
 
         mIdVerifier = IdentityVerifier.createVerifier(OnlineFaceDemo.this, new InitListener() {
             @Override
@@ -173,11 +179,8 @@ public class OnlineFaceDemo extends Activity implements View.OnClickListener {
             if (null != mProDialog) {
                 mProDialog.dismiss();
             }
-
             showTip(error.getPlainDescription(true));
-        }
-
-    };
+        }};
 
     /**
      * 人脸验证监听器
@@ -218,9 +221,7 @@ public class OnlineFaceDemo extends Activity implements View.OnClickListener {
             }
 
             showTip(error.getPlainDescription(true));
-        }
-
-    };
+        }};
 
     /**
      * 人脸模型操作监听器
@@ -262,11 +263,7 @@ public class OnlineFaceDemo extends Activity implements View.OnClickListener {
         public void onError(SpeechError error) {
             // 弹出错误信息
             showTip(error.getPlainDescription(true));
-        }
-
-    };
-
-
+        }};
 
     private void executeModelCommand(String cmd) {
         // 设置人脸模型操作参数
@@ -276,12 +273,13 @@ public class OnlineFaceDemo extends Activity implements View.OnClickListener {
         mIdVerifier.setParameter(SpeechConstant.MFV_SCENES, "ifr");
         // 用户id
         mIdVerifier.setParameter(SpeechConstant.AUTH_ID, mAuthid);
-
         // 设置模型参数，若无可以传空字符传
         StringBuffer params = new StringBuffer();
         // 执行模型操作
         mIdVerifier.execute("ifr", cmd, params.toString(), mModelListener);
     }
+
+
 
     @Override
     public void onClick(View view) {
@@ -324,7 +322,6 @@ public class OnlineFaceDemo extends Activity implements View.OnClickListener {
                     mIdVerifier.setParameter(SpeechConstant.AUTH_ID, mAuthid);
                     // 设置监听器，开始会话
                     mIdVerifier.startWorking(mEnrollListener);
-
                     // 子业务执行参数，若无可以传空字符传
                     StringBuffer params = new StringBuffer();
                     // 向子业务写入数据，人脸数据可以一次写入
@@ -496,14 +493,10 @@ public class OnlineFaceDemo extends Activity implements View.OnClickListener {
                     @Override
                     public void onScanCompleted(String path, Uri uri) {
 
-                    }
-                });
-    }
+                    }});}
 
     private void showTip(final String str) {
         mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         mToast.setText(str);
         mToast.show();
-    }
-}
-
+    }}

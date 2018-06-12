@@ -4,7 +4,6 @@ package com.fubon.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,11 +14,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.fubon.myapplication.ffffff.DataDetail;
+import com.fubon.myapplication.ffffff.MyAdapter;
 import com.iflytek.cloud.FaceRequest;
 import com.iflytek.cloud.RequestListener;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
-import com.iflytek.cloud.SpeechUtility;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
